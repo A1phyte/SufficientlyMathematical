@@ -1,5 +1,6 @@
 import asyncio
 import numpy as np
+from scipy.stats import linregress
 import matplotlib.pyplot as plt
 import re
 from sklearn.linear_model import LinearRegression
@@ -25,14 +26,14 @@ async def linreg(ctx):
     def check(m):
         return m.author == sender and m.channel == channel
     try:
-        xvalues = await bot.wait_for(event = 'message', check = check, timeout = 15)
+        xvalues = await bot.wait_for(event = 'message', check = check, timeout = 60)
         xvalues = xvalues.content
     except asyncio.TimeoutError:
         await ctx.send("Time ran out")
     else:
         await ctx.send("Please enter your y values:")
         try:
-            yvalues = await bot.wait_for(event = 'message', check = check, timeout = 15)
+            yvalues = await bot.wait_for(event = 'message', check = check, timeout = 60)
             yvalues = yvalues.content
         except asyncio.TimeoutError:
             await ctx.send("Time ran out")
@@ -42,16 +43,31 @@ async def linreg(ctx):
     ylist = [[float(i) for i in re.findall(r"[-+]?\d*\.\d+|\d+", yvalues)]]
     X = np.array(xlist)
     y = np.array(ylist)
-    regressor = LinearRegression().fit(X, y)
-    formula = f'y = {regressor.coef_[0]}x + {regressor.intercept_}'
-    plt.scatter(X, y, color = 'red')
-    plt.plot(X, regressor.predict(X), color = 'black', linewidth = 3, label = formula)
-    plt.title("Linear Regression")
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.legend(loc = 'upper left')
-    plt.savefig('temp.png')
-    await ctx.send(file = discord.File('temp.png'))
+    slope, intercept, rValue, pValue, stdErr = linregress(X, y)
+    # regressor = LinearRegression().fit(X, y)
+    # formula = f'y = {regressor.coef_[0]}x + {regressor.intercept_}'
+    # plt.scatter(X, y, color = 'red')
+    # plt.plot(X, regressor.predict(X), color = 'black', linewidth = 3, label = formula)
+    # plt.title("Linear Regression")
+    # plt.xlabel("x")
+    # plt.ylabel("y")
+    # plt.legend(loc = 'upper left')
+    # plt.savefig('temp.png')
+    embed = discord.Embed(
+        title = "Linear regression",
+        description = f'x: {xlist[0]}\ny: {ylist[0]}',
+        color = discord.Color.blue()
+    )
+    embed.set_author(
+        name = bot.user.name,
+        url = 'https://github.com/A1phyte/SufficientlyMathematical',
+        icon_url = bot.user.avatar_url
+    )
+    embed.add_field(
+        name = 'Equation',
+        value = f'y = {round(slope, 3)}x + {round(intercept, 3)}'
+    )
+    await ctx.send(embed = embed)
 
 @bot.command(aliases = ['wolfram'])
 async def wolframalphasearch(ctx, *, query):
@@ -68,7 +84,88 @@ async def wolframalphasearch(ctx, *, query):
     )
     await ctx.send(embed = embed)
 
+@bot.command()
+async def quadreg(ctx):
+    sender = ctx.author
+    channel = ctx.channel
+    await ctx.send("Please enter your x values:")
+    def check(m):
+        return m.author == sender and m.channel == channel
+    try:
+        xvalues = await bot.wait_for(event = 'message', check = check, timeout = 60)
+        xvalues = xvalues.content
+    except asyncio.TimeoutError:
+        await ctx.send("Time ran out")
+    else:
+        await ctx.send("Please enter your y values:")
+        try:
+            yvalues = await bot.wait_for(event = 'message', check = check, timeout = 60)
+            yvalues = yvalues.content
+        except asyncio.TimeoutError:
+            await ctx.send("Time ran out")
+    await ctx.send(f'x-values: {xvalues}')
+    await ctx.send(f'y-values: {yvalues}')
+    xlist = [float(i) for i in re.findall(r"[-+]?\d*\.\d+|\d+", xvalues)]
+    ylist = [float(i) for i in re.findall(r"[-+]?\d*\.\d+|\d+", yvalues)]
+    X = np.array(xlist)
+    y = np.array(ylist)
+    poly = np.polyfit(X, y, 2)
+    embed = discord.Embed(
+        title = "Quadratic regression",
+        description = f'x: {xlist}\ny: {ylist}',
+        color = discord.Color.blue()
+    )
+    embed.set_author(
+        name = bot.user.name,
+        url = 'https://github.com/A1phyte/SufficientlyMathematical',
+        icon_url = bot.user.avatar_url
+    )
+    embed.add_field(
+        name = 'Equation',
+        value = f'y = {round(poly[0], 3)}x² + {round(poly[1], 3)}x + {round(poly[2],3)}'
+    )
+    await ctx.send(embed = embed)
 
-
+@bot.command()
+async def cubicreg(ctx):
+    sender = ctx.author
+    channel = ctx.channel
+    await ctx.send("Please enter your x values:")
+    def check(m):
+        return m.author == sender and m.channel == channel
+    try:
+        xvalues = await bot.wait_for(event = 'message', check = check, timeout = 60)
+        xvalues = xvalues.content
+    except asyncio.TimeoutError:
+        await ctx.send("Time ran out")
+    else:
+        await ctx.send("Please enter your y values:")
+        try:
+            yvalues = await bot.wait_for(event = 'message', check = check, timeout = 60)
+            yvalues = yvalues.content
+        except asyncio.TimeoutError:
+            await ctx.send("Time ran out")
+    await ctx.send(f'x-values: {xvalues}')
+    await ctx.send(f'y-values: {yvalues}')
+    xlist = [float(i) for i in re.findall(r"[-+]?\d*\.\d+|\d+", xvalues)]
+    ylist = [float(i) for i in re.findall(r"[-+]?\d*\.\d+|\d+", yvalues)]
+    X = np.array(xlist)
+    y = np.array(ylist)
+    poly = np.polyfit(X, y, 3)
+    embed = discord.Embed(
+        title = "Cubic regression",
+        description = f'x: {xlist}\ny: {ylist}',
+        color = discord.Color.blue()
+    )
+    embed.set_author(
+        name = bot.user.name,
+        url = 'https://github.com/A1phyte/SufficientlyMathematical',
+        icon_url = bot.user.avatar_url
+    )
+    embed.add_field(
+        name = 'Equation',
+        value = f'y = {round(poly[0], 3)}x³ + {round(poly[1], 3)}x² + {round(poly[2], 3)}x + {round(poly[3],3)}'
+    )
+    await ctx.send(embed = embed)
         
 bot.run(config['token'])
