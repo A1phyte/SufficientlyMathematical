@@ -127,7 +127,7 @@ async def quadreg(ctx):
     await ctx.send(embed = embed)
 
 @bot.command()
-async def cubicreg(ctx):
+async def quarreg(ctx):
     sender = ctx.author
     channel = ctx.channel
     await ctx.send("Please enter your x values:")
@@ -151,9 +151,9 @@ async def cubicreg(ctx):
     ylist = [float(i) for i in re.findall(r"[-+]?\d*\.\d+|\d+", yvalues)]
     X = np.array(xlist)
     y = np.array(ylist)
-    poly = np.polyfit(X, y, 3)
+    poly = np.polyfit(X, y, 4)
     embed = discord.Embed(
-        title = "Cubic regression",
+        title = "Quartic regression",
         description = f'x: {xlist}\ny: {ylist}',
         color = discord.Color.blue()
     )
@@ -164,7 +164,7 @@ async def cubicreg(ctx):
     )
     embed.add_field(
         name = 'Equation',
-        value = f'y = {round(poly[0], 3)}x³ + {round(poly[1], 3)}x² + {round(poly[2], 3)}x + {round(poly[3],3)}'
+        value = f'y = {round(poly[0], 3)}x⁴ {round(poly[1], 3)}x³ + {round(poly[2], 3)}x² + {round(poly[3], 3)}x + {round(poly[4],3)}'
     )
     await ctx.send(embed = embed)
         
