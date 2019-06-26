@@ -72,7 +72,7 @@ async def linreg(ctx):
 
 @bot.command(aliases = ['wolfram'])
 async def wolframalphasearch(ctx, *, query):
-    client = wolframalpha.Client('86RUL9-5X3JUHAKR5')
+    client = wolframalpha.Client(config['wolframalphatoken'])
     results = client.query(query)
     embed = discord.Embed(
         title = f'Wolfram | Alpha results for: {query}',
