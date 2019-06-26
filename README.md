@@ -23,4 +23,28 @@ Searches Wolfram | Alpha
 !linreg
 ```
 
-Performs a linear regression on the x and y values entered by the user. (WIP, does not work yet)
+Performs a linear regression on the x and y values entered by the user. 
+
+```
+!quadreg
+```
+
+Performs a quadratic regression on hte x and y values entered by the user.
+
+```
+!cubicreg
+```
+
+Performs a cubic regression on hte x and y values entered by the user.
+
+```
+!quarreg
+```
+
+Performs a cubic regression on hte x and y values entered by the user.
+
+```
+!logreg
+```
+
+Performs a log regression on hte x and y values entered by the user.
